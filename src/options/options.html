@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="options.css" />
+    <style></style>
+  </head>
+  <body>
+    <form width="100%">
+      <div class="form-row">
+        <div class="checkbox-container input-row">
+          <input
+            type="checkbox"
+            id="shouldUseHomepage"
+            class="checkbox-input"
+          />
+          <label for="shouldUseHomepage" class="checkbox-label"
+            >Navigate to another page upon completion</label
+          >
+          <span id="homepageSaveMessage" class="save-message">
+            Changes saved!
+          </span>
+        </div>
+        <input
+          type="text"
+          id="homepage"
+          name="homepage"
+          class="input-field"
+          placeholder="https://www.alessdistractingsite.com"
+        />
+      </div>
+      <div class="form-row">
+        <div class="input-row checkbox-container">
+          <label for="urlPatterns" class="label">Url patterns:</label>
+          <span id="urlPatternsSaveMessage" class="save-message"
+            >Changes saved!</span
+          >
+        </div>
+        <textarea
+          rows="10"
+          id="urlPatterns"
+          name="urlPatterns"
+          class="input-field"
+          placeholder="Url patterns, one per line, * for wildcards"
+        ></textarea>
+      </div>
+    </form>
+
+    <script src="options.js"></script>
+  </body>
+</html>
