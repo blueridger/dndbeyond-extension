@@ -68,6 +68,7 @@ function addOverlayElement() {
 
   <input type="text" style="
     width: 70%;
+    max-width: 30rem;
     padding: 0.5rem;
     font-size: 1rem;
     border: none;
@@ -76,7 +77,7 @@ function addOverlayElement() {
     color: #333; /* Dark text color */
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
     margin-bottom: 1.5rem;
-  " id="reasonInput">
+  " id="reasonInput"/>
 
   <button style="
     padding: 0.5rem 1rem;
