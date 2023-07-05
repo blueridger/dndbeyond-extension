@@ -162,14 +162,12 @@ function addBannerElement() {
   document.getElementById("banner-close").addEventListener("click", (event) => {
     if (dragging) return;
     event.stopPropagation();
-    browser.storage.sync.set({
-      [`reason-${window.location.hostname}`]: undefined,
-    });
     browser.storage.sync
-      .get(["shouldUseHomepage", "homepage"])
+      .remove(`reason-${window.location.hostname}`)
+      .then(() => browser.storage.sync.get(["shouldUseHomepage", "homepage"]))
       .then((result) => {
         if (result.shouldUseHomepage && result.homepage) {
-          window.location.href = result.homepage;
+          window.location.assign(result.homepage);
         } else {
           addOverlayElement();
           document.getElementById("reasonInput").value = "";
@@ -199,14 +197,15 @@ function addBannerElement() {
 }
 
 function escapeRegExp(string) {
-  return string.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/[*]/g, '\.$&');; // $& means the whole matched string
+  return string.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/[*]/g, ".$&"); // $& means the whole matched string
 }
 
 function main(results) {
   if (results.urlPatterns) {
     for (const pattern of results.urlPatterns) {
-      console.log(escapeRegExp(pattern))
-      if (new RegExp("^" + escapeRegExp(pattern),"i").test(window.location.href)) {
+      if (
+        new RegExp("^" + escapeRegExp(pattern), "i").test(window.location.href)
+      ) {
         browser.storage.sync.get(`reason-${window.location.hostname}`).then(
           (results) => {
             if (results[`reason-${window.location.hostname}`]) {
