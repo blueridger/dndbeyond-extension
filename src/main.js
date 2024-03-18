@@ -5,7 +5,7 @@ function buildRedirect(savedParams) {
     console.log(`Redirecting: ${requestDetails.url}`);
     url = new URL(requestDetails.url)
     params = new URLSearchParams(url.search);
-    if (!params.has("filter-source")) {
+    if (savedParams && !params.has("filter-source")) {
       for (const value of savedParams)
         params.append("filter-source", value)
       url.search = params.toString()
