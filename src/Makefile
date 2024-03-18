@@ -5,3 +5,6 @@ build:
 		git merge main
 		web-ext build -a web-ext-artifacts/chrome-artifacts
 		git checkout main
+
+run:
+    web-ext run
