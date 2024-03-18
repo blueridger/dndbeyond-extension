@@ -10,7 +10,7 @@
   },
 
   "background": {
-    "scripts": ["main.js"]
+    "scripts": ["browser-polyfill.min.js","main.js"]
   },
 
   "options_ui": {
