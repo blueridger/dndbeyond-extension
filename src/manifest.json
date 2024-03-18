@@ -3,7 +3,7 @@
   "name": "DnD Beyond Auto Source Filter",
   "version": "1.0.1",
 
-  "description": "Make DnDBeyond.com better",
+  "description": "Enable auto filter by source book on DnDBeyond.com",
 
   "icons": {
     "32": "icons/icon-32.png"
