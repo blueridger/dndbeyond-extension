@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "DnD Beyond Auto Source Filter",
-  "version": "1.0.3",
+  "version": "1.0.4",
 
   "description": "Enable auto filter by source book on DnDBeyond.com",
 
