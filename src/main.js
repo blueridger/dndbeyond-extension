@@ -4,6 +4,7 @@ function redirect(requestDetails) {
   console.log(`Redirecting: ${requestDetails.url}`);
   console.log("s:"+savedParams)
   url = new URL(requestDetails.url);
+  if (/^\/sources(\/|$)/.test(url.pathname)) return;
   params = new URLSearchParams(url.search);
   if (savedParams?.length && !params.has("filter-source")) {
     for (const value of savedParams) params.append("filter-source", value);
