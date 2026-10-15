@@ -8,7 +8,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(
     const url = new URL(details.url);
     const params = new URLSearchParams(url.search);
     const { savedParams } = await chrome.storage.sync.get(["savedParams"]);
-    if (savedParams && !params.has(FILTER)) {
+    if (savedParams?.length && !params.has(FILTER)) {
       for (const value of savedParams) params.append(FILTER, value);
       url.search = params.toString();
       chrome.tabs.update(details.tabId, { url: url.toString() });

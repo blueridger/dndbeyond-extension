@@ -21,16 +21,19 @@ function restoreOptions() {
       "current: " + (result.currentParams ?? "");
     document.getElementById("savedParams").innerText =
       "saved: " + (result.savedParams ?? "");
-    document.getElementById("saveButton").addEventListener("click", () => {
+    document.getElementById("saveButton").onclick = (e) => {
+      e.preventDefault();
       browser.storage.sync
         .get(["currentParams"])
-        .then((result) =>
-          browser.storage.sync.set({
+        .then((result) => {
+          // Saving an empty filter would make every page redirect to itself.
+          if (!result.currentParams?.length) return;
+          return browser.storage.sync.set({
             savedParams: result.currentParams,
-          })
-        );
-      restoreOptions();
-    });
+          });
+        })
+        .then(restoreOptions);
+    };
   }, console.log);
 }
 
