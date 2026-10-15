@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "DnD Beyond Auto Source Filter",
   "version": "1.0.4",
 
@@ -10,14 +10,14 @@
   },
 
   "background": {
-    "scripts": ["browser-polyfill.min.js","main.js"]
+    "service_worker": "background.chrome.js"
   },
 
   "options_ui": {
     "page": "options/options.html"
   },
 
-  "browser_action": {
+  "action": {
     "default_icon": {
       "32": "icons/icon-32.png"
     },
@@ -25,16 +25,7 @@
     "default_popup": "options/options.html"
   },
 
-  "permissions": [
-    "storage",
-    "webRequest",
-    "webRequestBlocking",
-    "https://www.dndbeyond.com/"
-  ],
+  "permissions": ["storage", "webNavigation"],
 
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{fe422939-cf9d-45f7-923c-eae74650ba62}"
-    }
-  }
+  "host_permissions": ["https://www.dndbeyond.com/*"]
 }
