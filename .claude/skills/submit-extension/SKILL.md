@@ -83,29 +83,66 @@ Release notes for both stores: draft them from the step 2 `git log`, written
 for users (e.g. "Fixes a redirect loop when no sources are saved"), and get
 the user's approval.
 
-### Chrome Web Store  _(UI steps not yet verified live; fix them after the first run)_
-1. Open `https://chrome.google.com/webstore/devconsole` and select
-   `gnbdkhkkpjggdohophbonegpbdioaede`.
-2. If a version is already pending review, stop and report.
-3. Go to **Package**, then **Upload new package**. Upload the Chrome zip with
-   `file_upload`, giving the absolute path.
-4. Report validation errors verbatim. Don't work around them.
-5. Permissions changed in 1.0.5 (`webRequest`/`webRequestBlocking` were
-   replaced by `webNavigation` + `host_permissions`). Check that the
-   **Privacy** tab's permission justifications cover the current permissions.
-   Draft any new justification text and get the user's approval.
-6. Ask the user to confirm, then click **Submit for review**.
+### Chrome Web Store: use the API, NOT Claude in Chrome
+Chrome blocks every extension from scripting or screenshotting Web Store
+pages, including the developer dashboard ("The extensions gallery cannot be
+scripted"). So Claude in Chrome can't drive it. Use `scripts/cws.sh`
+(Chrome Web Store API v2) instead:
 
-### Firefox AMO  _(UI steps not yet verified live; fix them after the first run)_
+- The publisher account is the user's **techwitch.dev** Google account, not
+  their main Gmail. With the wrong account, the dashboard redirects to
+  `/devconsole/register`.
+- Credentials live in the gitignored `.env.cws` at the repo root (see the
+  script header). Never ask for them in chat, echo them, or type them into a
+  page. To check them, print value lengths only.
+- One-time setup (done 2026-11-16): Cloud project "Chrome Web Store
+  automation" (`true-shore-515023-i1`) under techwitch.dev, a **Desktop app**
+  OAuth client "cws-cli", and consent in Testing mode with techwitch.dev as a
+  test user. If the refresh token stops working (for example, Testing-mode
+  tokens can expire), re-run `python3 -I scripts/cws-auth.py`. It opens the
+  consent screen, and the user approves as techwitch.dev. It uses `curl` for
+  the token exchange because the python.org Python has no CA certs.
+- Don't search the user's email for review or rejection notices. Use
+  `cws.sh status` and ask the user.
+
+1. `scripts/cws.sh status`. `submittedItemRevisionStatus` shows the last
+   submission's state (`PENDING_REVIEW`, `REJECTED`, ...). If it's pending,
+   stop. If it was rejected, ask the user for the reason before resubmitting.
+2. `scripts/cws.sh upload` creates a draft only. Report errors verbatim.
+3. Ask the user to confirm, then run `scripts/cws.sh publish`, then `status`.
+   If publish returns **400 `INVALID_ITEM_METADATA`**, the dashboard listing
+   is incomplete. Usually the Privacy-tab permission justifications are
+   missing after a permissions change. The user fixes this in the dashboard
+   (link in the error) and can submit from there. Offer justification text
+   for each new permission.
+4. Release notes: the API doesn't take them. That's fine; Chrome doesn't
+   show per-version notes.
+
+History: 1.0.4 was REJECTED (MV3 manifest used `background.scripts`).
+1.0.5 (service worker + `webNavigation`) was submitted 2026-11-16.
+
+### Firefox AMO  _(verified live 2026-11-16, 1.0.5)_
+AMO account: techwitch.dev. Claude in Chrome works fine here.
 1. Open
-   `https://addons.mozilla.org/en-US/developers/addon/dnd-beyond-auto-source-filter/versions/submit/`.
-2. Keep distribution "On this site". Upload the Firefox zip.
-3. Wait for validation and report any warnings or errors.
-4. Source code question: the code is unminified except
-   `browser-polyfill.min.js`, a well-known third-party library. Answer
-   **No** unless the user says otherwise.
-5. Paste the approved release notes.
-6. Ask the user to confirm, then click **Submit Version**.
+   `https://addons.mozilla.org/en-US/developers/addon/dnd-beyond-auto-source-filter/versions`
+   and confirm nothing is awaiting review.
+2. Open `.../versions/submit/`. "Where to Host" is already "On this site".
+3. Use `find` to locate the hidden `file-input`, then `file_upload` the
+   Firefox zip. Wait about 8s for validation.
+4. If there are any warnings, open "See full validation report" (its href)
+   **in a separate tab**, so the form isn't lost. Fix real warnings in the
+   source and rebuild with `make firefox FORCE=1` rather than shipping them.
+   (Example: AMO requires `gecko.data_collection_permissions`; `web-ext lint`
+   locally did not flag it.)
+5. Compatibility: leave **Firefox** checked and **Firefox for Android**
+   unchecked, then click Continue.
+6. Details page: type the approved notes in **Release Notes**. Leave Notes to
+   Reviewer empty. Screenshot to confirm the text landed.
+7. Ask the user to confirm, then click **Submit Version**.
+8. Then a **source-code question** appears. Answer **No** (`web-ext build`
+   only zips the files; `browser-polyfill.min.js` is the stock library) and
+   click Continue. The page shows "Version Submitted". Publication can take
+   up to 24h.
 
 ## Step 6: Verify and clean up
 
